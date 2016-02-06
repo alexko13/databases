@@ -6,7 +6,7 @@ USE chat;
 
 CREATE TABLE users (
   id int(10) NOT NULL AUTO_INCREMENT,
-  username varchar(20),
+  username varchar(20) UNIQUE,
   PRIMARY KEY (id)
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE messages (
 /*  Execute this file from the command line by typing:
  *    mysql -u root < server/schema.sql
  *  to create the database and the tables.*/
-INSERT INTO rooms (roomname) VALUES ('bobsroom');
+INSERT INTO rooms (roomname) VALUES ('lobby');
 
 INSERT INTO users (username) VALUES ('bob');
 INSERT INTO messages (userid, roomid, timestamp, text) VALUES (1, 1, NOW(), 'His name was robert paulson');

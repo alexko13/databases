@@ -9,16 +9,55 @@ module.exports = {
       console.log('Handling GET');
       models.messages.get(function(messages) {
         var data = JSON.stringify(messages);
-        console.log(data);
-        res.end(data);
+        res.end(JSON.stringify(data));
       });
-    }, // a function which handles a get request for all messages
-    post: function (req, res) {} // a function which handles posting a message to the database
+    },
+    post: function (req, res) {
+      var result = '';
+      req.on('data', function(data) {
+        result += data;
+      });
+      req.on('end', function() {
+        var message = JSON.parse(result);
+        models.messages.post(message, function() {
+          //morestuff
+          res.end();
+        });
+      });
+    }
   },
 
   users: {
-    // Ditto as above
-    get: function (req, res) {},
-    post: function (req, res) {}
+    get: function (req, res) {
+      models.users.get(function(users) {
+        res.end(JSON.stringify(users));
+      });
+    },
+    post: function (req, res) {
+      // create user if it didn't exist
+    }
+  },
+
+  userId: {
+    get: function(req, res) {},
+    post: function (req, res) {
+      //call models.users.getId
+      var result = ''
+      req.on('data', function(data){
+        result += data;
+      });
+      req.on('end', function() {
+        var username = JSON.parse(result).username;
+        models.users.getId(username, function(id) {
+          if (id) {
+            res.end(JSON.stringify(id));
+          } else {
+            models.users.post(username, function(id) {
+              res.end(JSON.stringify(id));
+            });
+          }
+        });
+      });
+    },
   }
 };

@@ -13,6 +13,9 @@ var connection = mysql.createConnection({
 // TODO: When should we close the connection? Or do we not need to? If not, why ?
 module.exports.query = query = function(qStr, callback) {
   connection.query(qStr, function(err, rows, fields){
+    // console.log('error: ', err);
+    // console.log('rows: ', rows);
+    // console.log('fields: ', fields);
     callback(rows);
   });
 };
