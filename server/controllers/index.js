@@ -34,15 +34,7 @@ module.exports = {
       });
     },
     post: function (req, res) {
-      // create user if it didn't exist
-    }
-  },
-
-  userId: {
-    get: function(req, res) {},
-    post: function (req, res) {
-      //call models.users.getId
-      var result = ''
+      var result = '';
       req.on('data', function(data){
         result += data;
       });
