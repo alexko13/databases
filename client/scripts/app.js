@@ -134,7 +134,7 @@ $(function() {
         text: app.$message.val(),
         username: app.username,
         roomname: app.$roomSelect.val(),
-        createdAt: Date()
+        createdAt: Date() //remove?
       };
       app.currentRoom = app.$roomSelect.val();
       app.send(messageObj);
