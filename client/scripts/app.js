@@ -5,7 +5,8 @@ $(function() {
     username: 'Anonymous',
     currentRoom: 'lobby',
     init: function() {
-      app.username = window.location.search.split('username=')[1];
+      // app.username = window.location.search.split('username=')[1];
+      app.username = prompt('What\'s your name?');
       app.chatRooms = {};
       app.friends = {};
       app.$send = $('#send');
@@ -133,8 +134,8 @@ $(function() {
       var messageObj = {
         text: app.$message.val(),
         username: app.username,
-        roomname: app.$roomSelect.val(),
-        createdAt: Date() //remove?
+        roomname: app.$roomSelect.val()
+        //,createdAt: Date() //remove?
       };
       app.currentRoom = app.$roomSelect.val();
       app.send(messageObj);
