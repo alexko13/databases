@@ -31,7 +31,7 @@ CREATE TABLE messages (
  *    mysql -u root < server/schema.sql
  *  to create the database and the tables.*/
 
--- INSERT INTO users (username) VALUES ('bob');
--- INSERT INTO rooms (roomname) VALUES ('bobsroom');
--- INSERT INTO messages (userid, roomid, timestamp, text) VALUES (1, 1, NOW(), 'His name was robert paulson');
+INSERT INTO users (username) VALUES ('bob');
+INSERT INTO rooms (roomname) VALUES ('bobsroom');
+INSERT INTO messages (userid, roomid, timestamp, text) VALUES (1, 1, NOW(), 'His name was robert paulson');
 
