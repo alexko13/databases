@@ -16,6 +16,6 @@
   "scripts": {
     "test": "node ./server/app.js & mocha server/spec/server-spec.js; RES=$?; kill %1; exit $RES",
     "start": "nodemon ./server/app.js",
-    "bobscript": "echo 'hello world'"
+    "resetdb": "mysql -u root < server/schema.sql"
   }
 }
