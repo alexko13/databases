@@ -13,16 +13,11 @@ module.exports = {
       });
     },
     post: function (req, res) {
-      var result = '';
-      req.on('data', function(data) {
-        result += data;
-      });
-      req.on('end', function() {
-        var message = JSON.parse(result);
-        models.messages.post(message, function(result) {
-          console.log(result);
-          res.end();
-        });
+      console.log(req.body);
+      var message = req.body;
+      models.messages.post(message, function(result) {
+        console.log(result);
+        res.end();
       });
     }
   },
@@ -34,21 +29,15 @@ module.exports = {
       });
     },
     post: function (req, res) {
-      var result = '';
-      req.on('data', function(data){
-        result += data;
-      });
-      req.on('end', function() {
-        var username = JSON.parse(result).username;
-        models.users.getId(username, function(id) {
-          if (id) {
+      var username = req.body.username;
+      models.users.getId(username, function(id) {
+        if (id) {
+          res.end(JSON.stringify(id));
+        } else {
+          models.users.post(username, function(id) {
             res.end(JSON.stringify(id));
-          } else {
-            models.users.post(username, function(id) {
-              res.end(JSON.stringify(id));
-            });
-          }
-        });
+          });
+        }
       });
     },
   }
