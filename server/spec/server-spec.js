@@ -21,9 +21,9 @@ describe("Persistent Node Chat Server", function() {
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
     // dbConnection.query("truncate " + tablename, done);
-    dbConnection.query("truncate users", done);
-    dbConnection.query("truncate messages", done);
-    dbConnection.query("truncate rooms", done);
+    dbConnection.query("delete from users");
+    dbConnection.query("delete from rooms");
+    dbConnection.query("delete from messages", done);
   });
 
   afterEach(function() {

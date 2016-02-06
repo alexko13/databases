@@ -10,9 +10,17 @@ var connection = mysql.createConnection({
   database: 'chat'
 });
 
+// TODO: When should we close the connection? Or do we not need to? If not, why ?
 module.exports.query = query = function(qStr, callback) {
   connection.query(qStr, function(err, rows, fields){
     callback(rows);
   });
-  connection.end();
 };
+
+// query('SELECT users.username, messages.text, rooms.roomname from users join messages on messages.userid = users.id join rooms on rooms.id = messages.roomid', function(data) {
+//   console.log(data);
+// })
+
+//select users.username, message.text, rooms.roomname from messages join rooms on rooms.id = messages.roomid join users on message.userid = users.id
+
+// SELECT users.username, messages.text, rooms.roomname from users join messages on messages.userid = users.id join rooms on rooms.id = messages.roomid
