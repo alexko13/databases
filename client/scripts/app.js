@@ -1,19 +1,18 @@
 // YOUR CODE HERE:
 $(function() {
   app = {
-    server: 'http://127.0.0.1:3000/classes/',
+    server: 'http://localhost:3000/classes/',
     username: 'Anonymous',
     currentRoom: 'lobby',
     init: function() {
-      // app.username = window.location.search.split('username=')[1];
       app.username = prompt('What\'s your name?');
       app.chatRooms = {};
       app.friends = {};
       app.$send = $('#send');
       app.$chats = $('#chats');
       app.$message = $('#message');
-      app.$roomSelect = $('#roomSelect');
       app.$clearChat = $('.clearChat');
+      app.$roomSelect = $('#roomSelect');
       app.$refreshChat = $('.refreshChat');
       app.$makeNewRoom = $('.makeNewRoom');
 
@@ -21,20 +20,16 @@ $(function() {
         event.preventDefault();
         app.handleSubmit();
       });
-
       app.$clearChat.on('click', function(event) {
         app.clearMessages();
       });
-
       app.$refreshChat.on('click', function(event) {
         app.fetch();
       });
-
       app.$roomSelect.on('change', function(event) {
         app.currentRoom = app.$roomSelect.val();
         app.fetch();
       });
-
       app.$makeNewRoom.on('click', function(event) {
         app.currentRoom = prompt("What's the name of your new room?");
         app.chatRooms[app.currentRoom] = true;
@@ -42,45 +37,64 @@ $(function() {
         app.$roomSelect.val(app.currentRoom);
       });
 
-      app.fetch();
-      setInterval(function() {
-        app.fetch();
-      }, 3000);
+
+      //'login' using post req
+      app.login(app.username);
+      // app.fetch();
+      // setInterval(function() {
+      //   app.fetch();
+      // }, 3000);
+    },
+    login: function(username) {
+      console.log('username is: ', username);
+      $.ajax({
+        url: app.server + 'users',
+        type: "POST",
+        data: JSON.stringify({"username": username}),
+        contentType: "application/json",
+        success: function(data) {
+          console.log("Chatterbox: Logged in.", data);
+          // app.fetch();
+        },
+        error: function(data) {
+          console.log("Chatterbox: Log in failed. Error: ", data);
+        }
+      });
     },
     send: function(message) {
       $.ajax({
-        url: app.server,
+        url: app.server + "messages",
         type: "POST",
         data: JSON.stringify(message),
         contentType: "application/json",
         success: function(data) {
-          console.log("chatterbox: Message Sent! data: ", data);
+          console.log("Chatterbox: Message Sent! data: ", data);
           app.fetch();
         },
         error: function(data) {
-          console.log("chatterbox: Failed to send message. Error: ", data);
+          console.log("Chatterbox: Failed to send message. Error: ", data);
         }
       });
     },
     fetch: function(chatroom) {
       chatroom = chatroom || "lobby";
       $.ajax({
-        url: app.server,
+        url: app.server + 'messages',
         type: "GET",
         contentType: "application/json",
         success: function(data) {
-          console.log("chatterbox: Fetched! data: ", data);
-          app.populateRoomsAndChats(data);
+          console.log("Chatterbox: Fetched! data: ", JSON.parse(data));
+          app.populateRoomsAndChats(JSON.parse(data));
         },
         error: function(data) {
-          console.log("chatterbox: Failed to fetch data. Error: ", data);
+          console.log("Chatterbox: Failed to fetch data. Error: ", data);
         }
       });
     },
     populateRoomsAndChats: function(data) {
       app.clearMessages();
-      for(var i = 0; i < data.results.length; i++) {
-        var result = data.results[i];
+      for(var i = 0; i < data.length; i++) {
+        var result = data[i];
         app.addMessage(result);
         if(!app.chatRooms[result.roomname]) {
           app.chatRooms[result.roomname] = true;
