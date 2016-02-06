@@ -19,8 +19,8 @@ module.exports = {
       });
       req.on('end', function() {
         var message = JSON.parse(result);
-        models.messages.post(message, function() {
-          //morestuff
+        models.messages.post(message, function(result) {
+          console.log(result);
           res.end();
         });
       });
