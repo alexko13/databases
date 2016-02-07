@@ -5,7 +5,7 @@ $(function() {
     username: 'Anonymous',
     currentRoom: 'lobby',
     init: function() {
-      app.username = prompt('What\'s your name?');
+      app.username = prompt('What\'s your name?') || app.username;
       app.chatRooms = {};
       app.friends = {};
       app.$send = $('#send');

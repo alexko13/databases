@@ -5,37 +5,56 @@ var sequelize = new Sequelize('chat', 'root', '', {
   dialect: 'mysql'
 });
 
-var User = sequelize.define('User', {
+var Users = sequelize.define('Users', {
   username: {type: Sequelize.STRING, unique: true}
 });
 
-var Message = sequelize.define('Message', {
+var Messages = sequelize.define('Messages', {
   //userid: Sequelize.INTEGER,
   text: Sequelize.STRING,
   roomname: Sequelize.STRING
 });
 
-//Message.hasOne(User, {as: 'user', foreignKey: 'userid'});
-User.hasMany(Message);
+// Messages.hasOne(Users, {as: 'user', foreignKey: 'UsersId'});
+Users.hasMany(Messages);
+//Messages.hasOne(Users);
 
-User.sync().then(function() {
+Users.sync().then(function() {
   console.log('User table created');
-  Message.sync().then(function() {
+  Messages.sync().then(function() {
     console.log('Message table created');
   });
 });
+
+
+module.exports = {
+  Users: Users,
+  Messages: Messages
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // var newUser = User.create({username: 'george'});
 // console.log('id: ', newUser.get('id'));
 // Message.create({text: 'NEW MESSAGE'}).then(function(instance){
 //   console.log(instance);
 // });``
-
-module.exports = {
-  User: User,
-  Message: Message
-};
-
 // User.sync().then(function() {
 //   var newUser = User.build({username:'bob'});
 //   console.log('User table created');

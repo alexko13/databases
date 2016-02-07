@@ -1,5 +1,6 @@
 var models = require('../models');
 var bluebird = require('bluebird');
+var Sequelize = require('sequelize');
 
 
   // // now instantiate an object and save it:
@@ -21,36 +22,68 @@ var bluebird = require('bluebird');
 module.exports = {
   messages: {
     get: function (req, res) {
-      console.log('Handling GET');
-      models.messages.get(function(messages) {
-        var data = JSON.stringify(messages);
-        res.end(JSON.stringify(data));
+      models.Users.findAll()
+      .then(function(users) {
+        var usersMap = {};
+        users.forEach(function(user) {
+          usersMap[user.id] = user.username;
+        });
+        models.Messages.findAll()
+        .then(function(messages) {
+          var mapped = messages.map(function(message) {
+            return {
+              text: message.text,
+              username: usersMap[message.get({plain: true}).UserId],
+              roomname: 'lobby'
+            };
+          });
+          res.end(JSON.stringify(mapped));
+        });
       });
+      // models.Messages.findAll({
+      //   include: [{
+      //     model: models.Users,
+      //     where: {id: Sequelize.col('messages.UserId')}
+      //   }]
+      // })
+      // .then(function(messages) {
+      //   console.log(messages);
+      //   res.end(JSON.stringify(messages));
+      // });
     },
     post: function (req, res) {
-      console.log(req.body);
-      var message = req.body;
-      models.messages.post(message, function(result) {
-        console.log(result);
-        res.end();
+      var username = req.body.username;
+      var text = req.body.text;
+      models.Users.findOne({where: {username: username}})
+      .then(function(user) {
+        var userid = user.get({plain: true}).id;
+        models.Messages.create({'text': text, 'UserId': userid, 'roomname': 'lobby'})
+        .then(function(data) {
+          res.end(JSON.stringify(data));
+        });
+      })
+      .catch(function(err) {
+        console.log('Failed to add message: ', err);
+        res.end(err);
       });
     }
   },
 
   users: {
     get: function (req, res) {
-      models.users.get(function(users) {
+      models.Users.findAll()
+      .then(function(users) {
         res.end(JSON.stringify(users));
       });
     },
     post: function (req, res) {
       var username = req.body.username;
-      models.User.findAll({where: {username: username}})
+      models.Users.findAll({where: {username: username}})
       .then(function(user){
         if (user[0]) {
           res.end(JSON.stringify(user[0].get({plain: true}).id));
         } else {
-          models.User.create({username: username}).then(function(user) {
+          models.Users.create({username: username}).then(function(user) {
             res.end(JSON.stringify(user.get({plain: true}).id));
           });
         }
